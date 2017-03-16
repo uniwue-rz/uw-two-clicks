@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-09T18:43:47Z" product-name="uw_two_clicks">
+		<header/>
+		<body>
+			<trans-unit id="tca.database_table_tile" xml:space="preserve">
+				<source>UW Two Clicks Table</source>
+			</trans-unit>
+			<trans-unit id="tca.title" xml:space="preserve">
+				<source>Option 2</source>
+			</trans-unit>
+			<trans-unit id="tca.embedded_text_desc" xml:space="preserve">
+				<source>Contains the information about the embedded text</source>
+			</trans-unit>
+			<trans-unit id="tca.auto_play_desc" xml:space="preserve">
+				<source>If the youtube or other play should autoplay</source>
+			</trans-unit>
+			<trans-unit id="tca.width_desc" xml:space="preserve">
+				<source>The width of the element only applicable for not embedded text</source>
+			</trans-unit>
+			<trans-unit id="tca.height_desc" xml:space="preserve">
+				<source>The height of the element only applicable for not embedded text</source>
+			</trans-unit>
+			<trans-unit id="tca.preview_image_id" xml:space="preserve">
+				<source>The sys_file id of the image that is used</source>
+			</trans-unit>
+			<trans-unit id="tca.record_id" xml:space="preserve">
+				<source>The id of the record on the website for youtube is sth like 233XXw2d</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_uw_two_clicks" xml:space="preserve">
+				<source>Two Clicks</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_uw_two_clicks" xml:space="preserve">
+				<source>Two Clicks</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

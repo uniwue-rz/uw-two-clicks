@@ -1,0 +1,13 @@
+mod.wizards.newContentElement.wizardItems.plugins {
+	elements {
+		uw_two_clicks {
+            icon = EXT:uw_two_clicks/ext_icon.png
+			title = LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:two_click_wizard_title
+			description = LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:two_click_wizard_desc
+			tt_content_defValues {
+				CType = list
+				list_type = uwtwoclicks_app
+			}
+		}
+	}
+}

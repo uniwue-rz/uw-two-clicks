@@ -1,0 +1,85 @@
+<T3DataStructure>
+        <meta>
+                <langDisable>1</langDisable>
+        </meta>
+        <sheets>
+                <sDEF>
+                        <ROOT>
+                                <TCEforms>
+                                        <sheetTitle>
+                                         LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:record_details
+                                        </sheetTitle>
+                                </TCEforms>
+                                <type>array</type>
+                                <el>
+                                        <settings.record_type>
+                                                <TCEforms>
+                                                        <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:record_type</label>
+                                                        <onChange>reload</onChange>
+                                                        <config>
+                                                                <type>select</type>
+                                                                <items type="array">
+                                                                        <numIndex index="0" type="array">
+                                                                                <numIndex index="0">LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:record_type_youtube</numIndex>
+                                                                                <numIndex index="1">yt</numIndex>
+                                                                        </numIndex>
+                                                                        <numIndex index="1" type="array">
+                                                                                <numIndex index="0">LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:record_type_google_map</numIndex>
+                                                                                <numIndex index="1">gm</numIndex>
+                                                                        </numIndex>
+                                                                </items>
+                                                        </config>
+                                                        <default>yt</default>
+                                                </TCEforms>
+                                        </settings.record_type>
+                                        <settings.record_id>
+                                                <TCEforms>
+                                                        <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:record_id</label>
+                                                        <config>
+                                                        <type>input</type>
+                                                        <size>30</size>
+                                                        <eval>trim</eval>
+                                                        </config>
+                                                </TCEforms>
+                                        </settings.record_id>
+                                        <settings.embedded_text>
+                                                <TCEforms>
+                                                        <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:embedded_text</label>
+                                                        <config>
+                                                        <type>text</type>
+                                                        <size>60</size>
+                                                        </config>
+                                                </TCEforms>
+                                        </settings.embedded_text>
+                                        <settings.autoplay>
+                                                <TCEforms>
+                                                        <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:autoplay</label>
+                                                        <config>
+                                                        <type>check</type>
+                                                        </config>
+                                                        <displayCond>FIELD:settings.record_type:=:yt</displayCond>
+                                                </TCEforms>
+                                        </settings.autoplay>
+                                        <settings.width>
+                                                <TCEforms>
+                                                        <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:width</label>
+                                                        <config>
+                                                        <type>input</type>
+                                                        <size>30</size>
+                                                        </config>
+                                                </TCEforms>
+                                        </settings.width>
+                                        <settings.height>
+                                                <TCEforms>
+                                                        <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:height</label>
+                                                        <config>
+                                                        <type>input</type>
+                                                        <size>30</size>
+                                                        </config>
+                                                </TCEforms>
+                                        </settings.height>
+                                </el>
+                        </ROOT>
+                </sDEF>
+        </sheets>
+</T3DataStructure>

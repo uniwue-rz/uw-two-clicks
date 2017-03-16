@@ -1,0 +1,15 @@
+config.tx_extbase {
+    persistence {
+        classes {
+            De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Domain\Model\Record {
+                mapping {
+                    tableName = tx_uw_two_click_records
+                    columns {
+                        record_id.mapOnProperty = record_id
+                        embedded_text.mapOnProperty = embedded_text
+                    }
+                }
+            }
+        }
+    }
+}

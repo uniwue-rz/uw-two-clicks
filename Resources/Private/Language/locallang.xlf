@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-09T18:44:59Z" product-name="uw_two_clicks">
+		<header/>
+		<body>
+			<trans-unit id="record_id" xml:space="preserve">
+				<source>Record ID</source>
+			</trans-unit>
+			<trans-unit id="record_details" xml:space="preserve">
+				<source>Record Details</source>
+			</trans-unit>
+			<trans-unit id="record_type" xml:space="preserve">
+				<source>Record Type</source>
+			</trans-unit>
+			<trans-unit id="record_type_youtube" xml:space="preserve">
+				<source>Youtube</source>
+			</trans-unit>
+			<trans-unit id="record_type_youtube_key" xml:space="preserve">
+				<source>yt</source>
+			</trans-unit>
+			<trans-unit id="record_type_google_map" xml:space="preserve">
+				<source>Google Map</source>
+			</trans-unit>
+			<trans-unit id="record_type_google_map_key" xml:space="preserve">
+				<source>gm</source>
+			</trans-unit>
+			<trans-unit id="url" xml:space="preserve">
+				<source>URL</source>
+			</trans-unit>
+			<trans-unit id="two_click_wizard_title" xml:space="preserve">
+				<source>Two Click element</source>
+			</trans-unit>
+			<trans-unit id="two_click_wizard_desc" xml:space="preserve">
+				<source>Two Click Decrtiption</source>
+			</trans-unit>              
+			<trans-unit id="embedded_text" xml:space="preserve">
+				<source>Text to be Embedded</source>
+			</trans-unit>
+			<trans-unit id="autoplay" xml:space="preserve">
+				<source>Activate Auto Play</source>
+			</trans-unit>
+			<trans-unit id="height" xml:space="preserve">
+				<source>Height</source>
+			</trans-unit>
+			<trans-unit id="width" xml:space="preserve">
+				<source>Width</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,10 @@
+# cat=youtube/enable; type=string; label=Youtube Api Token: Youtube Api Token can be obtained from https://developers.google.com/youtube/v3/.
+apiToken =
+# cat=youtube/enable; type=string; label=Youtube Api Url: The Youtube Api Url can be obtained from https://developers.google.com/youtube/v3/.
+apiUrl =
+# cat=youtube/enable; type=boolean; label=Auto Play: Should The videos be played after click as default option.
+autoPlay =
+# cat=youtube/enable; type=int; label=Width: Default width of the embedded youtube video
+width =
+# cat=youtube/enable; type=int; label=Height: Default Height of the embedded youtube video
+height =
