@@ -8,7 +8,9 @@
 * @license MIT
 */
 
-class URL{
+namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility;
+
+class Url{
 
     /**
     * Placeholder for the url
@@ -50,7 +52,7 @@ class URL{
         }
         $this->url = $url;
         $this->name = $name;
-        $this->tmpFolder = sys_get_temp_dir();
+        $this->tmpFolder = sys_get_temp_dir()."/";
     }
 
     /**
@@ -113,10 +115,11 @@ class URL{
     * @return CURL
     */
     public function fetchAsFile($curl){
-        $fp = fopen($this->getStorePath(), "wb");
+        $fp = fopen($this->getStorePath(), "w");
         curl_setopt($curl, CURLOPT_FILE, $fp);
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_exec($curl);
+        echo "<br>Error is : ".curl_error($curl); 
         curl_close($curl);
         fclose($fp);
 

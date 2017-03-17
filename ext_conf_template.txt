@@ -1,3 +1,4 @@
+youtube{
 # cat=youtube/enable; type=string; label=Youtube Api Token: Youtube Api Token can be obtained from https://developers.google.com/youtube/v3/.
 apiToken =
 # cat=youtube/enable; type=string; label=Youtube Api Url: The Youtube Api Url can be obtained from https://developers.google.com/youtube/v3/.
@@ -8,3 +9,10 @@ autoPlay =
 width =
 # cat=youtube/enable; type=int; label=Height: Default Height of the embedded youtube video
 height =
+# cat=youtube/enable; type=text; label=Disclaimer: The disclaimer that should be shown to the user for youtube videos
+disclaimer =
+}
+files{
+# cat=files/enable; type=string; label=FileAdmin default Folder: This should be set to change FileAdmin default folder.
+    defaultFolder =    
+}

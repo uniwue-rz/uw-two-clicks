@@ -1,0 +1,3 @@
+plugin.uw_two_clicks.settings{
+    files.defaultFolder = /uw_two_clicks
+}
