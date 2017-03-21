@@ -18,27 +18,12 @@ class StartController extends ActionController{
     * The index action which is called by the plugin
     */
     public function indexAction(){
-                 $backendData = new BackendConfig();
-                 var_dump($backendData->all());
-                 $fileHandler = new FileHandler();
-                 $url = new Url("http://php.net/images/logos/php-logo.svg", "google.txt");
-                 $data = $this->configurationManager->getContentObject()->data;
-                 var_dump($fileHandler->getContentFileMount($data["uid"]));
-                 $this->configurationManager->getContentObject()->readFlexformIntoConf($data['pi_flexform'], $a);
-                 $this->view->assign('hello', "HELLO");
-    }
-
-
-
-    public function getPagePerms($id){
-        $pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord(
-           'pages',
-           $id,
-           '*',
-           ($perms_clause ? ' AND ' . $perms_clause : '')
-       );
-
-       return $pageinfo;
+        $backendData = new BackendConfig();
+        $fileHandler = new FileHandler();
+        $url = new Url("http://php.net/images/logos/php-logo.svg", "google.txt");
+        $data = $this->configurationManager->getContentObject()->data;
+        $this->configurationManager->getContentObject()->readFlexformIntoConf($data['pi_flexform'], $a);
+        $this->view->assign('hello', "HELLO");
     }
 
     /**
