@@ -11,14 +11,10 @@ CREATE TABLE tx_uw_two_clicks_records (
         embedded_text text NOT NULL,
         auto_play boolean Default '0' NOT NULL,
         preview_image_id int(11)  DEFAULT '0' NOT NULL,
-        contet_id int(11) DEFAULT '0' NOT NULL,
+        content_id int(11) DEFAULT '0' NOT NULL,
         width int(11)  DEFAULT '0' NOT NULL,
         height int(11)  DEFAULT '0' NOT NULL,
 
         PRIMARY KEY (uid),
         KEY parent (pid)
-);
-
-CREATE TABLE tt_content(
-        tx_uw_two_clicks_id INT(11) DEFAULT '0' NOT NULL,
 );

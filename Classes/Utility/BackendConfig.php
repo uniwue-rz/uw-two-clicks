@@ -10,15 +10,7 @@
 namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility;
 
 class BackendConfig{
-
-    /**
-    * Returns the fallback config for the given Backend
-    *
-    */
-    public function getFallbackConfig(){
-
-    }
-
+    
     /**
     * Returns the configuration for the given key.
     *

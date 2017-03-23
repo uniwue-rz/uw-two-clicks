@@ -1,0 +1,1 @@
+plugin.tx_uwtwoclicks.settings.files = {$plugin.tx_uwtwoclicks.settings.files} 

@@ -63,7 +63,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim',
+                'eval' => 'trim,int',
             ],
         ],
         'width' => [
@@ -72,7 +72,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim',
+                'eval' => 'trim,int',
             ],
         ],
         'height' => [
@@ -81,7 +81,16 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 30,
-                'eval' => 'trim',
+                'eval' => 'trim,int',
+            ],
+        ],
+        'content_id' => [
+            'exclude' => 0,
+            'label' => 'Content ID',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'trim,int',
             ],
         ],
         'auto_play' => [

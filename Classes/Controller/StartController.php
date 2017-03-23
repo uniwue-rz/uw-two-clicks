@@ -12,6 +12,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\BackendConfig;
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\Url;
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\FileHandler;
+use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services\YoutubeService;
 
 class StartController extends ActionController{
     /**
@@ -19,9 +20,11 @@ class StartController extends ActionController{
     */
     public function indexAction(){
         $backendData = new BackendConfig();
+        $youtubeService = new YoutubeService($backendData->value("youtube.apiUrl"), $backendData->value("youtube.apiToken"));
+        $url = $youtubeService->getPreviewImageUrl("j8UCHvSK09E");
         $fileHandler = new FileHandler();
-        $url = new Url("http://php.net/images/logos/php-logo.svg", "google.txt");
         $data = $this->configurationManager->getContentObject()->data;
+        $youtubeService->addPreviewImageAsFile($url, "j8UCHvSK09E",$data["uid"]);
         $this->configurationManager->getContentObject()->readFlexformIntoConf($data['pi_flexform'], $a);
         $this->view->assign('hello', "HELLO");
     }

@@ -92,4 +92,34 @@ class FileHandler{
         return BackendUtility::getRecord('sys_filemounts', $fileMountId, 'path');
     }
 
+    /**
+    * Returns the default storage
+    *
+    * @return Storage
+    **/
+    public function getDefaultStorage(){
+        $resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
+
+        return $resourceFactory->getStorageObject(1);
+    }
+
+    /**
+    * Adds a file in tmp folder to the Typo3 FileAdmin
+    *
+    * @param string  $fileRealPath   The path to the file in tmp folder
+    * @param string  $fileAdminPath  The fileadmin path for the given page
+    * @param Storage $storage        The storage the file should be added to.
+    * @param string  $fileName       The fileName that should be set for the given user
+    *
+    * @return mix
+    */
+    public function addFile($fileRealPath, $fileAdminPath, $storage, $fileName){
+        $fileAdminPathObject = $storage->getFolder($fileAdminPath);
+        return $storage->addFile($fileRealPath, $fileAdminPathObject, $fileName);
+    }
+
+    public function addFileReference(){
+
+    }
+
 }

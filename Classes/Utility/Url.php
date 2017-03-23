@@ -135,7 +135,12 @@ class Url{
     * @return mix
     */
     public function fetchAsVar($curl){
+        curl_setopt($curl, CURLOPT_HEADER, 0);  
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($curl);
+        curl_close($curl);
 
+        return $output;
     }
 
     
