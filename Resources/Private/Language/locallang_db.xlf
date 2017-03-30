@@ -3,11 +3,26 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-09T18:43:47Z" product-name="uw_two_clicks">
 		<header/>
 		<body>
-			<trans-unit id="tca.database_table_tile" xml:space="preserve">
+			<trans-unit id="tca.tile" xml:space="preserve">
 				<source>UW Two Clicks Table</source>
 			</trans-unit>
 			<trans-unit id="tca.title" xml:space="preserve">
 				<source>Option 2</source>
+			</trans-unit>
+			<trans-unit id="tca.record_id" xml:space="preserve">
+				<source>The unique id of the given record on the service website</source>
+			</trans-unit>
+			<trans-unit id="tca.record_type_youtube" xml:space="preserve">
+				<source>Youtube record</source>
+			</trans-unit>
+			<trans-unit id="tca.record_type_google_map" xml:space="preserve">
+				<source>Google record</source>
+			</trans-unit>
+			<trans-unit id="tca.contetn_id" xml:space="preserve">
+				<source>The uid of the content using the record</source>
+			</trans-unit>
+			<trans-unit id="tca.record_type" xml:space="preserve">
+				<source>Type of record</source>
 			</trans-unit>
 			<trans-unit id="tca.embedded_text_desc" xml:space="preserve">
 				<source>Contains the information about the embedded text</source>
@@ -23,6 +38,9 @@
 			</trans-unit>
 			<trans-unit id="tca.preview_image_id" xml:space="preserve">
 				<source>The sys_file id of the image that is used</source>
+			</trans-unit>
+			<trans-unit id="tca.license" xml:space="preserve">
+				<source>The license the record is using</source>
 			</trans-unit>
 			<trans-unit id="tca.record_id" xml:space="preserve">
 				<source>The id of the record on the website for youtube is sth like 233XXw2d</source>

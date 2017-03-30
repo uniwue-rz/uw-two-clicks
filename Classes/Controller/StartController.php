@@ -19,13 +19,14 @@ class StartController extends ActionController{
     * The index action which is called by the plugin
     */
     public function indexAction(){
-        $backendData = new BackendConfig();
-        $youtubeService = new YoutubeService($backendData->value("youtube.apiUrl"), $backendData->value("youtube.apiToken"));
-        $url = $youtubeService->getPreviewImageUrl("j8UCHvSK09E");
-        $fileHandler = new FileHandler();
-        $data = $this->configurationManager->getContentObject()->data;
-        $youtubeService->addPreviewImageAsFile($url, "j8UCHvSK09E",$data["uid"]);
-        $this->configurationManager->getContentObject()->readFlexformIntoConf($data['pi_flexform'], $a);
+        //$backendData = new BackendConfig();
+        //$youtubeService = new YoutubeService($backendData->value("youtube.apiUrl"), $backendData->value("youtube.apiToken"));
+        //$url = $youtubeService->getPreviewImageUrl("j8UCHvSK09E");
+        //$fileHandler = new FileHandler();
+        //$data = $this->configurationManager->getContentObject()->data;
+       // $file = $youtubeService->addPreviewImageAsFile($url, "j8UCHvSK09E",$data["uid"]);
+        //var_dump($youtubeService->addPreviewImageToContent($data["uid"], $file));
+        //$this->configurationManager->getContentObject()->readFlexformIntoConf($data['pi_flexform'], $a);
         $this->view->assign('hello', "HELLO");
     }
 

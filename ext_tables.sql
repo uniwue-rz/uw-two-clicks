@@ -9,6 +9,7 @@ CREATE TABLE tx_uw_two_clicks_records (
         record_id varchar(255) DEFAULT '' NOT NULL,
         record_type  varchar(255) DEFAULT '' NOT NULL,
         embedded_text text NOT NULL,
+        license varchar(255) DEFAULT '' NOT NULL,
         auto_play boolean Default '0' NOT NULL,
         preview_image_id int(11)  DEFAULT '0' NOT NULL,
         content_id int(11) DEFAULT '0' NOT NULL,

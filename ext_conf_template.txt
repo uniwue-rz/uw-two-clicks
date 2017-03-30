@@ -13,6 +13,12 @@ height =
 disclaimer =
 }
 files{
-# cat=files/enable; type=string; label=FileAdmin default Folder: This should be set to change FileAdmin default folder.
-    defaultFolder =    
+# cat=files/enable; type=string; label=Fileadmin default folder to store the preview files
+    defaultMountPoint =    
+
+# cat=files/enable; type=string; label=Mount point type can be simple/group
+    mountPointType = 
+
+# cat=files/enable; type=string; label=The folder the images are saved into on the mountpoint default is TwoClicksImage
+    storeFolder = 
 }

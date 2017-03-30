@@ -16,6 +16,7 @@ return [
         'embedded_text' => 'embedded_text',
         'auto_play' => 'auto_play',
         'preview_image_id' => 'preview_image_id',
+        'license' => 'license',
         'width' => 'width',
         'height' => 'height'
     ],
@@ -30,27 +31,36 @@ return [
         ],
         'record_type' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang_db.xlf:tx_examples_dummy.record_type',
+            'label' => 'LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang_db.xlf:tca.record_type',
             'config' => [
                 'type' => 'select',
                 'items' => [
-                    ['LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang_db.xlf:record_type_youtube', 'yt'],
-                    ['LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang_db.xlf:record_type_google_map', 'gm'],
+                    ['LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang_db.xlf:tca.record_type_youtube', 'yt'],
+                    ['LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang_db.xlf:tca.record_type_google_map', 'gm'],
                 ],
             ],
         ],
         'title' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.database_table_tile',
+            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.title',
             'config' => [
                 'type' => 'input',
-                'size' => 30,
+                'size' => 255,
+                'eval' => 'trim',
+            ],
+        ],
+        'license' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.license',
+            'config' => [
+                'type' => 'input',
+                'size' => 255,
                 'eval' => 'trim',
             ],
         ],
         'record_id' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.database_table_tile',
+            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.record_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -86,7 +96,7 @@ return [
         ],
         'content_id' => [
             'exclude' => 0,
-            'label' => 'Content ID',
+            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.content_id',
             'config' => [
                 'type' => 'input',
                 'size' => 30,

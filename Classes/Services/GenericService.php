@@ -10,8 +10,6 @@
 
 namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services;
 
-use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\BackendConfig;
-
 class GenericService{
 
     /**
@@ -28,11 +26,6 @@ class GenericService{
     * Placeholder for the service type
     */
     private $serviceType;
-
-    /**
-    * Placeholder for the backend config
-    */
-    private $backendConfig;
 
     /**
     * Constructor

@@ -12,7 +12,6 @@ use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\Url;
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\FileHandler;
 
 class YoutubeService extends GenericService{
-
     /**
     * Constructor 
     *
@@ -24,11 +23,10 @@ class YoutubeService extends GenericService{
         parent::__construct($apiUrl, $apiToken, "yt");
     }
 
-
     /**
     * Returns the record detail for the given record
     *
-    * @param string $recordId The id of the record the details neededs
+    * @param string $recordId The id of the record the details needs
     *
     * @return string
     */
@@ -44,7 +42,7 @@ class YoutubeService extends GenericService{
     /**
     * Returns the preview image for the given record
     *
-    * @param string $recordId The id of the record the details neededs
+    * @param string $recordId The id of the record the details needs
     * 
     * @return string
     */
@@ -64,14 +62,52 @@ class YoutubeService extends GenericService{
     * @param string $url        The url of the given image
     * @param int    $contentId  The id of the given element
     *
-    * @return bool
+    * @return TYPO3\CMS\Core\Resource\File|Null
     */
     public function addPreviewImageAsFile($url, $recordId, $contentId){
         $fileHandler = new FileHandler();
         $name = $recordId.".jpeg";
         $url = new Url($url, $name);
         $fileMount = $fileHandler->getContentFileMount($contentId);
-        $storage = $fileHandler->getDefaultStorage();
-        $fileHandler->addFile($url->fetch(), $fileMount, $storage, $name);
+        $storeFolder = $fileHandler->getStoreFolder();
+        $storage = $fileHandler->getStorage();
+        
+        return $fileHandler->addFile($url->fetch(), $fileMount, $storeFolder, $storage, $name);
+    }
+
+    /**
+    * Adds the given file to the given content.
+    *
+    * @param int $contentId The content id
+    * @param TYPO3\CMS\Core\Resource\File $fileObject The file object that should be used.
+    *
+    * @return bool
+    */
+    public function addPreviewImageToContent($contentId, $fileObject){
+        $fileHandler = new FileHandler();
+
+        return $fileHandler->addFileReference($contentId, $fileObject);
+    }
+
+    /**
+    * Checks if the preview image exists
+    *
+    * @param string $recordId The id of the record that the preview image should be searched for.
+    *
+    * @return bool
+    */
+    public function previewImageExists($recordId){
+
+    }
+
+    /**
+    * Updates the preview image to a new image.
+    *
+    * @param string $recordId The id of the new preview image.
+    *
+    * @return bool
+    **/
+    public function updatePreviewImage($recordId){
+
     }
 }

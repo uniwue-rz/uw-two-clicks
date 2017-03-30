@@ -51,7 +51,7 @@
                                                         </config>
                                                 </TCEforms>
                                         </settings.embedded_text>
-                                        <settings.autoplay>
+                                        <settings.auto_play>
                                                 <TCEforms>
                                                         <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:autoplay</label>
                                                         <config>
@@ -59,7 +59,7 @@
                                                         </config>
                                                         <displayCond>FIELD:settings.record_type:=:yt</displayCond>
                                                 </TCEforms>
-                                        </settings.autoplay>
+                                        </settings.auto_play>
                                         <settings.width>
                                                 <TCEforms>
                                                         <label>LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang.xlf:width</label>
