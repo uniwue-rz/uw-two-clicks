@@ -9,7 +9,6 @@
 namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services;
 
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\Url;
-use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\FileHandler;
 
 class YoutubeService extends GenericService{
     /**
@@ -18,25 +17,41 @@ class YoutubeService extends GenericService{
     * @param string $apiUrl The api url for youtube
     * @param string $apiToken The api Token for the youtube
     */
-    public function __construct($apiUrl = null, $apiToken = null){
-    
-        parent::__construct($apiUrl, $apiToken, "yt");
+    public function __construct($apiUrl = '', $apiToken = ''){
+        parent::__construct("yt", $apiUrl, $apiToken);
     }
 
     /**
     * Returns the record detail for the given record
     *
-    * @param string $recordId The id of the record the details needs
+    * @param string $recordData The id of the record the details needs
     *
-    * @return string
+    * @return array
     */
-    public function getRecordDetails($recordId){
+    public function getProviderInformation($recordData){
+        $cacheKey = $this->getCacheHash($recordData);
+        // Check if the item exists in the cache
+        if($this->getCache() === true && $this->getCacheItem($cacheKey) !== false){
+
+            return $this->getCacheItem($cacheKey);
+        }
         $url = new Url($this->getApiUrl());
         $url->addParameter("key", $this->getApiToken());
         $url->addParameter("part", "snippet");
-        $url->addParameter("id", $recordId);
-        
-        return $url->fetch("GET", array(), true);
+        $url->addParameter("id", $recordData);
+        $value = json_decode($url->fetch("GET", array(), true), true);
+        // Check the result of query
+        if($value === null){
+            throw new \Exception("Error decoding the provider information: ". json_last_error());
+        }
+        if(isset($value["error"]) === true){
+            throw new \Exception("There was an error getting information from provider");
+        }
+        if($this->getCache() === true){
+            $this->setCacheItem($cacheKey, $value, 60);
+        }
+
+        return $value;
     }
 
     /**
@@ -47,7 +62,7 @@ class YoutubeService extends GenericService{
     * @return string
     */
     public function getPreviewImageUrl($recordId){
-        $jsonDetails = json_decode($this->getRecordDetails($recordId), true);
+        $jsonDetails = $this->getProviderInformation($recordId);
         if(isset($jsonDetails["items"][0]["snippet"]["thumbnails"]["standard"]["url"])){
 
             return $jsonDetails["items"][0]["snippet"]["thumbnails"]["standard"]["url"];
@@ -59,20 +74,20 @@ class YoutubeService extends GenericService{
     /**
     * Downloads the given image and save it to the FAL of the given page 
     *
-    * @param string $url        The url of the given image
-    * @param int    $contentId  The id of the given element
+    * @param string    $url          The url of the given image
+    * @param string    $fileName     The name of the file to be saved
+    * @param int       $contentId    The id of content element that should be used.
     *
     * @return TYPO3\CMS\Core\Resource\File|Null
     */
-    public function addPreviewImageAsFile($url, $recordId, $contentId){
-        $fileHandler = new FileHandler();
-        $name = $recordId.".jpeg";
+    public function addPreviewImageAsFile($url, $fileName, $contentId){
+        $name = $fileName.".jpeg";
         $url = new Url($url, $name);
-        $fileMount = $fileHandler->getContentFileMount($contentId);
-        $storeFolder = $fileHandler->getStoreFolder();
-        $storage = $fileHandler->getStorage();
+        $fileMount = $this->fileHandler->getContentFileMount($contentId);
+        $storeFolder = $this->fileHandler->getStoreFolder();
+        $storage = $this->fileHandler->getStorage();
         
-        return $fileHandler->addFile($url->fetch(), $fileMount, $storeFolder, $storage, $name);
+        return $this->fileHandler->addFile($url->fetch(), $fileMount, $storeFolder, $storage, $name);
     }
 
     /**
@@ -84,9 +99,8 @@ class YoutubeService extends GenericService{
     * @return bool
     */
     public function addPreviewImageToContent($contentId, $fileObject){
-        $fileHandler = new FileHandler();
 
-        return $fileHandler->addFileReference($contentId, $fileObject);
+        return $this->fileHandler->addFileReference($contentId, $fileObject);
     }
 
     /**

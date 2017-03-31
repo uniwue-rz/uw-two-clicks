@@ -15,7 +15,8 @@ CREATE TABLE tx_uw_two_clicks_records (
         content_id int(11) DEFAULT '0' NOT NULL,
         width int(11)  DEFAULT '0' NOT NULL,
         height int(11)  DEFAULT '0' NOT NULL,
-
+        url text DEFAULT '' NOT NULL,
+        alt varchar(255) DEFAULT '' NOT NULL,
         PRIMARY KEY (uid),
         KEY parent (pid)
 );

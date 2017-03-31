@@ -46,7 +46,7 @@ class Url{
     * @param string $url  The link that should be handled.
     * @param string $name The name of the file to be saved.
     */
-    public function __construct($url, $name=''){
+    public function __construct($url='', $name=''){
         if (filter_var($url, FILTER_VALIDATE_URL) === true){
             throw new Exception("The URL is not valid");
         }

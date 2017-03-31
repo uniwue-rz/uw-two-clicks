@@ -1,4 +1,4 @@
-youtube{
+yt{
 # cat=youtube/enable; type=string; label=Youtube Api Token: Youtube Api Token can be obtained from https://developers.google.com/youtube/v3/.
 apiToken =
 # cat=youtube/enable; type=string; label=Youtube Api Url: The Youtube Api Url can be obtained from https://developers.google.com/youtube/v3/.

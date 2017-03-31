@@ -49,6 +49,15 @@ return [
                 'eval' => 'trim',
             ],
         ],
+        'url' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.url',
+            'config' => [
+                'type' => 'input',
+                'size' => 500,
+                'eval' => 'trim',
+            ],
+        ],
         'license' => [
             'exclude' => 0,
             'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.license',

@@ -400,14 +400,4 @@ class FileHandler{
         
         return $storage->deleteFile($file);
     }
-
-    /**
-    * Deletes the file References from the database
-    *
-    * @param int $id The if of the file its references should be deleted
-    */
-    public function deleteFileReferences($id){
-
-    }
-
 }

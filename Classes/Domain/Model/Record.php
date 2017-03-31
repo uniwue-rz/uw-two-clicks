@@ -96,7 +96,8 @@ class Record{
         $previewImageId = null,
         $contentId = null,
         $udi = null,
-        $pid = null)
+        $pid = null,
+        $url = "")
         {
             $this->setRecordId($recordId);
             $this->setService($service);
@@ -109,22 +110,24 @@ class Record{
             $this->setContentId($contentId);
             $this->setPid($pid);
             $this->setUid($uid);
+            $this->setUrl($url);
             $this->flexFormService = new FlexFormService();
             $this->backendData = new BackendConfig();
-            $this->youtubeService = new YoutubeService($this->backendData->value("youtube.apiUrl"), $this->backendData->value("youtube.apiToken"));    
+            $this->youtubeService = new YoutubeService();    
             }
 
 
     /**
-    * Adds the preview Image to the system
+    * Adds the preview image to the system. Removes the existing image which is referenced.
     *
     * @param \TYPO3\CMS\Core\DataHandling\DataHandler   $dataHandler        DataHandler Object with can be used to retrieve data
     */
     public function addPreviewImage($dataHandler){
-        $record = $this->getRecordData();
-        $url = $this->youtubeService->getPreviewImageUrl($record["record_id"]);
-        $file = $this->youtubeService->addPreviewImageAsFile($url, $record["record_id"], $record["content_id"]);
-        $this->updateRecordToDatabase($record["uid"], array("preview_image_id" => $file->getUid()), $dataHandler);
+        $this->sync();
+        $url = $this->youtubeService->getPreviewImageUrl($this->getRecordId());
+        $fileName = $this->getRecordId()."-".$this->getContentId();
+        $file = $this->youtubeService->addPreviewImageAsFile($url, $fileName, $this->getContentId());
+        $this->updateRecordToDatabase($this->getUid(), array("preview_image_id" => $file->getUid()), $dataHandler);
     }
 
     /**
@@ -135,6 +138,25 @@ class Record{
     */
     public function setUid($uid){
         $this->uid = $uid;
+    }
+
+    /**
+    * Returns the url for the given service on the provider
+    *
+    * @return string
+    */
+    public function getUrl(){
+
+        return $this->url;
+    }
+
+    /**
+    * Sets the url for the given record
+    *
+    * @param string $url The url for the given service record on the provider
+    */
+    public function setUrl($url){
+        $this->url = $url;
     }
 
     /**
@@ -510,7 +532,7 @@ class Record{
             $id = $this->updateRecordFlexForm($fieldArray, $dataHandler);
         }
 
-        $this->setUid($uid);
+        $this->setUid($id);
     }
     
     /**
@@ -530,5 +552,24 @@ class Record{
     public function getContent(){
 
         return BackendUtility::getRecord('tt_content', $this->contentId);
+    }
+
+    /**
+    * Synchronizes the record with database, it does not update,
+    * only fetches the data from the server.
+    *
+    **/
+    public function sync(){
+         $record = BackendUtility::getRecord('tx_uw_two_clicks_records', $this->getUid());
+         $this->setPid($record["pid"]);
+         $this->setAutoPlay($record["auto_play"]);
+         $this->setContentId($record["content_id"]);
+         $this->setEmbeddedText($record["embedded_text"]);
+         $this->setLicense($record["license"]);
+         $this->setService($record["service"]);
+         $this->setPreviewImageId($record["preview_image_id"]);
+         $this->setRecordId($record["record_id"]);
+         $this->setHeight($record["height"]);
+         $this->setWidth($record["width"]);
     }
 }

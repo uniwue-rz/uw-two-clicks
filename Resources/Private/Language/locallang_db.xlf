@@ -39,6 +39,9 @@
 			<trans-unit id="tca.preview_image_id" xml:space="preserve">
 				<source>The sys_file id of the image that is used</source>
 			</trans-unit>
+			<trans-unit id="tca.url" xml:space="preserve">
+				<source>The url to the reocrd on the provider website</source>
+			</trans-unit>
 			<trans-unit id="tca.license" xml:space="preserve">
 				<source>The license the record is using</source>
 			</trans-unit>
