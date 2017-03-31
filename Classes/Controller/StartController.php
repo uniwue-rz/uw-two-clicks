@@ -13,21 +13,23 @@ use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\BackendConfig;
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\Url;
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\FileHandler;
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services\YoutubeService;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class StartController extends ActionController{
     /**
     * The index action which is called by the plugin
     */
     public function indexAction(){
-        //$backendData = new BackendConfig();
-        //$youtubeService = new YoutubeService($backendData->value("youtube.apiUrl"), $backendData->value("youtube.apiToken"));
-        //$url = $youtubeService->getPreviewImageUrl("j8UCHvSK09E");
-        //$fileHandler = new FileHandler();
-        //$data = $this->configurationManager->getContentObject()->data;
-       // $file = $youtubeService->addPreviewImageAsFile($url, "j8UCHvSK09E",$data["uid"]);
-        //var_dump($youtubeService->addPreviewImageToContent($data["uid"], $file));
-        //$this->configurationManager->getContentObject()->readFlexformIntoConf($data['pi_flexform'], $a);
-        $this->view->assign('hello', "HELLO");
+        $data = $this->configurationManager->getContentObject()->data;
+        $backendConfig = new BackendConfig();
+        $flexFromData = array();
+        $this->configurationManager->getContentObject()->readFlexformIntoConf($data['pi_flexform'], $flexFromData);
+        $record = BackendUtility::getRecord("tx_uw_two_clicks_records", intval($flexFromData["settings.two_click_record"]));
+        $height = $record["height"];
+        $width = $record["width"];
+        $this->view->assign('image_id', $record["preview_image_id"]);
+        $this->view->assign('height', $height);
+        $this->view->assign('width', $width);
     }
 
     /**

@@ -118,22 +118,13 @@ class Record{
     /**
     * Adds the preview Image to the system
     *
-    *
+    * @param \TYPO3\CMS\Core\DataHandling\DataHandler   $dataHandler        DataHandler Object with can be used to retrieve data
     */
-    public function addPreviewImage(){
+    public function addPreviewImage($dataHandler){
         $record = $this->getRecordData();
         $url = $this->youtubeService->getPreviewImageUrl($record["record_id"]);
         $file = $this->youtubeService->addPreviewImageAsFile($url, $record["record_id"], $record["content_id"]);
-        
-    }
-
-    /**
-    * Updates the record array with the given updateArray
-    *
-    * @param array $updateArray The update Array
-    */
-    public function updateRecord($updateArray, $dataHandler){
-
+        $this->updateRecordToDatabase($record["uid"], array("preview_image_id" => $file->getUid()), $dataHandler);
     }
 
     /**
@@ -379,6 +370,8 @@ class Record{
             $updatedRecordData["tstmap"] = $this->getRecordData()["tstmap"];
 
             $this->updateRecordToDatabase($this->getRecordData()["uid"], $updatedRecordData, $dataHandler);
+            //$this->addFlexFormDataToContent($this->getContent(), "two_click_record", $this->getRecordData()["uid"], $dataHandler);
+
             return $this->getRecordData()["uid"];
         }
 
@@ -395,11 +388,13 @@ class Record{
     **/
     public function addFlexFormDataToContent($content, $key, $value, $dataHandler){
         $flexForm = $content["pi_flexform"];
-        $flexFormData =  GeneralUtility::xml2array($flexForm);
-        $flexFormData['data']['sDEF']['lDEF']["settings.".$key]['vDEF'] = $value;
-        $flexFormTools = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Configuration\\FlexForm\\FlexFormTools');
-        $content["pi_flexform"] = $flexFormTools->flexArray2Xml($flexFormData, true);
-        $this->updateContent($content, $dataHandler);
+        if($flexForm !== Null){ 
+            $flexFormData =  GeneralUtility::xml2array($flexForm);
+            $flexFormData['data']['sDEF']['lDEF']["settings.".$key]['vDEF'] = $value;
+            $flexFormTools = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Configuration\\FlexForm\\FlexFormTools');
+            $content["pi_flexform"] = $flexFormTools->flexArray2Xml($flexFormData, true);
+            $this->updateContent($content, $dataHandler);
+        }
     }
 
     /**
@@ -512,7 +507,7 @@ class Record{
     public function addOrUpdateRecord($fieldArray, $dataHandler){
         $id = $this->addRecord($fieldArray, $dataHandler);
         if($id === 0){
-            $id = $this->updateRecordFlexFrom($fieldArray, $dataHandler);
+            $id = $this->updateRecordFlexForm($fieldArray, $dataHandler);
         }
 
         $this->setUid($uid);

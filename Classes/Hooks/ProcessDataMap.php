@@ -34,7 +34,7 @@ class ProcessDataMap {
             $record->setContentId($id);
             if($this->isTwoClicksElement($record->getContent())){
                 $record->addOrUpdateRecord($fieldArray, $dataHandler);
-                $record->addPreviewImage();
+                $record->addPreviewImage($dataHandler);
             }
         }
     }
