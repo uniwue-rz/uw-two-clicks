@@ -8,6 +8,8 @@
 
 namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services;
 
+use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Domain\Model\Record;
+
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\Url;
 
 class YoutubeService extends GenericService{
@@ -24,12 +26,12 @@ class YoutubeService extends GenericService{
     /**
     * Returns the record detail for the given record
     *
-    * @param string $recordData The id of the record the details needs
+    * @param Record $record The record object instance that the preview image should be built from.
     *
     * @return array
     */
-    public function getProviderInformation($recordData){
-        $cacheKey = $this->getCacheHash($recordData);
+    public function getProviderInformation(Record $record){
+        $cacheKey = $this->getCacheHash($record->getRecordId());
         // Check if the item exists in the cache
         if($this->getCache() === true && $this->getCacheItem($cacheKey) !== false){
 
@@ -37,8 +39,8 @@ class YoutubeService extends GenericService{
         }
         $url = new Url($this->getApiUrl());
         $url->addParameter("key", $this->getApiToken());
-        $url->addParameter("part", "snippet");
-        $url->addParameter("id", $recordData);
+        $url->addParameter("part", "snippet, status");
+        $url->addParameter("id", $record->getRecordId());
         $value = json_decode($url->fetch("GET", array(), true), true);
         // Check the result of query
         if($value === null){
@@ -57,12 +59,12 @@ class YoutubeService extends GenericService{
     /**
     * Returns the preview image for the given record
     *
-    * @param string $recordId The id of the record the details needs
+    * @param Record $record The record object instance that the preview image should be built from.
     * 
     * @return string
     */
-    public function getPreviewImageUrl($recordId){
-        $jsonDetails = $this->getProviderInformation($recordId);
+    public function getPreviewImageUrl(Record $record){
+        $jsonDetails = $this->getProviderInformation($record);
         if(isset($jsonDetails["items"][0]["snippet"]["thumbnails"]["standard"]["url"])){
 
             return $jsonDetails["items"][0]["snippet"]["thumbnails"]["standard"]["url"];
@@ -72,28 +74,74 @@ class YoutubeService extends GenericService{
     }
 
     /**
+    * Creates the name of the preview image
+    *
+    * @param Record $record The record object instance that the preview image should be built from.
+    *
+    * @return string
+    */
+    public function createPreviewFileName(Record $record){
+        return $record->getRecordId()."-".$record->getContentId().".jpeg";
+    }
+
+    /**
+    * Create preview file path for the given record and contentId based
+    * on the users setting
+    *
+    * @param Record $record The record object instance that the preview image should be built from.
+    *
+    * @return string
+    */
+    public function createPreviewFilePath(Record $record){
+        $fileName = $this->createPreviewFileName($record);
+        $path = $this->fileHandler->getContentFileMount($record->getContentId());
+        $path = $this->fileHandler->createFilePath($path, $this->fileHandler->getStoreFolder());
+        
+        return $this->fileHandler->createFilePath($path, $fileName);
+    }
+
+    /**
+    * Checks if the image exists
+    *
+    * @param Record $record The record object instance that the preview image should be built from.
+    *
+    * @return bool
+    */
+    public function previewImageExists(Record $record){
+        $path = $this->createPreviewFilePath($record);
+
+        return $this->fileHandler->fileExists($path);
+    }
+
+    /**
     * Downloads the given image and save it to the FAL of the given page 
     *
     * @param string    $url          The url of the given image
-    * @param string    $fileName     The name of the file to be saved
-    * @param int       $contentId    The id of content element that should be used.
+    * @param Record    $record       The record object instance that the preview image should be built from.
+    * @param string    $recordId     The old recordId, which is used by updates
     *
-    * @return TYPO3\CMS\Core\Resource\File|Null
+    * @return TYPO3\CMS\Core\Resource\File | Null
     */
-    public function addPreviewImageAsFile($url, $fileName, $contentId){
-        $name = $fileName.".jpeg";
-        $url = new Url($url, $name);
-        $fileMount = $this->fileHandler->getContentFileMount($contentId);
+    public function addOrUpdatePreviewImage($url, Record $record){
+        // Check if the file exists before, if yes return the existing file.
+        $fileName = $this->createPreviewFileName($record);
+        if($this->previewImageExists($record)){
+            $path = $this->createPreviewFilePath($record);
+            
+            return $this->fileHandler->getFile($path);
+        }
+        // File not exists download
+        $url = new Url($url, $fileName);
+        $fileMount = $this->fileHandler->getContentFileMount($record->getContentId());
         $storeFolder = $this->fileHandler->getStoreFolder();
-        $storage = $this->fileHandler->getStorage();
         
-        return $this->fileHandler->addFile($url->fetch(), $fileMount, $storeFolder, $storage, $name);
+        return $this->fileHandler->addFile($url->fetch(), $fileMount, $storeFolder, $fileName);
     }
 
     /**
     * Adds the given file to the given content.
     *
-    * @param int $contentId The content id
+    * @param int                          $contentId  The content id
     * @param TYPO3\CMS\Core\Resource\File $fileObject The file object that should be used.
     *
     * @return bool
@@ -104,24 +152,31 @@ class YoutubeService extends GenericService{
     }
 
     /**
-    * Checks if the preview image exists
-    *
-    * @param string $recordId The id of the record that the preview image should be searched for.
+    * Removes the preview image from the system if exists
     *
     * @return bool
     */
-    public function previewImageExists($recordId){
+    public function removePreviewImage(Record $record){
+        $path = $this->createPreviewFilePath($record);
+        $this->fileHandler->deleteFile($path);
+    }
+
+    /**
+    * Removes the preview image reference from system if exists
+    *
+    * @return bool
+    */
+    public function removePreviewImageReference(Record $record){
 
     }
 
     /**
-    * Updates the preview image to a new image.
+    * Creates the copy right tag for the given video 
+    * This is added underneath the given image
     *
-    * @param string $recordId The id of the new preview image.
-    *
-    * @return bool
-    **/
-    public function updatePreviewImage($recordId){
+    * @return string
+    */ 
+    public function getCopyRightTag(Record $record){
 
     }
 }

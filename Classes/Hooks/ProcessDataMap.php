@@ -9,6 +9,7 @@
 namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Hooks;
 
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Domain\Model\Record;
 
@@ -30,11 +31,22 @@ class ProcessDataMap {
                     $id = $dataHandler->substNEWwithIDs[$id];
                 }
             }
-            $record = new Record();
-            $record->setContentId($id);
-            if($this->isTwoClicksElement($record->getContent())){
-                $record->addOrUpdateRecord($fieldArray, $dataHandler);
-                $record->addPreviewImage($dataHandler);
+            $content = $this->getContentType($id);
+            if($this->isTwoClicksElement($content)){
+                $record = new Record();
+                $record->setContentId($id);
+                $record->setPid($content["pid"]);
+                    // Updates only happen when there is fieldArray change
+                    if(isset($fieldArray["pi_flexform"])){
+                        // Create a new Record that contains the changes
+                        $record->syncWithRecords(true);
+                        $newRecord = clone $record;
+                        $newRecord->fillWithFlexForm($fieldArray["pi_flexform"]);
+                        $diff = $newRecord->diff($record);
+                        $record->updateRecordWithArray($diff);
+                        $record->commitToRecordsTable($dataHandler);
+                        $record->commitToFlexForm($dataHandler);
+                  }
             }
         }
     }
@@ -60,7 +72,18 @@ class ProcessDataMap {
     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler        DataHandler Object with can be used to retrieve data
     */
     public function processCmdmap_deleteAction($table, $id, $recordToDelete, $recordWasDeleted=NULL, DataHandler &$dataHandler) {
+    }
 
+    /**
+    * Returns the content type for the given id
+    *
+    * @param int $id The id of the given content element
+    *
+    * @return array
+    */
+    public function getContentType($id){
+        
+        return BackendUtility::getRecord("tt_content", $id, "CType, list_type, pid");
     }
 
     /**

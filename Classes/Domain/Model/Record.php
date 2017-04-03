@@ -14,8 +14,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use TYPO3\CMS\Extbase\Service\FlexFormService;
 
-use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services\YoutubeService;
-use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\BackendConfig;
+use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services\ServiceDispatcher;
 
 class Record{
 
@@ -27,7 +26,7 @@ class Record{
     /**
     * @var string
     */
-    protected $service;
+    protected $recordType;
 
     /**
     * @var string
@@ -70,11 +69,6 @@ class Record{
     protected $pid;
 
     /**
-    * @var TYPO3\CMS\Extbase\Service\FlexFormService
-    */
-    protected $flexFormService;
-
-    /**
     * Constructor
     *
     * @param string $recordId       The id of the given record ont the service
@@ -100,7 +94,7 @@ class Record{
         $url = "")
         {
             $this->setRecordId($recordId);
-            $this->setService($service);
+            $this->setRecordType($recordType);
             $this->setEmbeddedText($embeddedText);
             $this->setWidth($width);
             $this->setHeight($height);
@@ -111,24 +105,7 @@ class Record{
             $this->setPid($pid);
             $this->setUid($uid);
             $this->setUrl($url);
-            $this->flexFormService = new FlexFormService();
-            $this->backendData = new BackendConfig();
-            $this->youtubeService = new YoutubeService();    
             }
-
-
-    /**
-    * Adds the preview image to the system. Removes the existing image which is referenced.
-    *
-    * @param \TYPO3\CMS\Core\DataHandling\DataHandler   $dataHandler        DataHandler Object with can be used to retrieve data
-    */
-    public function addPreviewImage($dataHandler){
-        $this->sync();
-        $url = $this->youtubeService->getPreviewImageUrl($this->getRecordId());
-        $fileName = $this->getRecordId()."-".$this->getContentId();
-        $file = $this->youtubeService->addPreviewImageAsFile($url, $fileName, $this->getContentId());
-        $this->updateRecordToDatabase($this->getUid(), array("preview_image_id" => $file->getUid()), $dataHandler);
-    }
 
     /**
     * Sets the Uid of the given record from
@@ -213,6 +190,7 @@ class Record{
     * @return int
     */
     public function getWidth(){
+
         return $this->width;
     }
 
@@ -251,6 +229,10 @@ class Record{
     * @param int $pid The page id of given content having this record.
     **/
     public function setPid($pid){
+        if($pid === "" || $pid === Null){
+
+            return;
+        }
         $this->pid = $pid;
     }
 
@@ -259,8 +241,13 @@ class Record{
     *
     * @param int $width The width for the given element
     */
-    public function setWidth($width){
-        $this->width = $width;
+    public function setWidth($width, $defaultWidth=500){
+        if($width === Null || $width === ""){
+            $this->width=$defaultWidth;
+        }
+        else{
+            $this->width = $width;
+        }
     }
 
     /**
@@ -269,6 +256,7 @@ class Record{
     * @return int
     */
     public function getHeight(){
+
         return $this->height;
     }
 
@@ -277,8 +265,12 @@ class Record{
     *
     * @param int $height The height of the record to set
     */
-    public function setHeight($height){
-        $this->height = $height;
+    public function setHeight($height, $defaultHeight=250){
+        if($height === Null || $height === ""){
+            $this->height = $defaultHeight;
+        }else{
+            $this->height = $height;
+        }
     }
 
     /**
@@ -296,7 +288,9 @@ class Record{
     * @param bool $autoPlay The autoplay of the record that should be set.
     */
     public function setAutoPlay($autoPlay){
-        $this->autoPlay = $autoPlay;
+        if(is_bool($autoPlay)){
+            $this->autoPlay = $autoPlay;
+        }
     }
 
     /**
@@ -318,21 +312,21 @@ class Record{
     }
 
     /**
-    * Returns the service id
+    * Returns the record type
     *
     * @return string
     */
-    public function getService(){
-        return $this->service;
+    public function getRecordType(){
+        return $this->recordType;
     }
 
     /**
-    * Sets the service for the given record
+    * Sets the record type for the given record
     *
-    * @param string $service The service that should be set.
+    * @param string $recordType The record Type that should be set.
     */
-    public function setService($service){
-        $this->service = (string) $service;
+    public function setRecordType($recordType){
+        $this->recordType = (string) $recordType;
     }
 
     /**
@@ -375,31 +369,6 @@ class Record{
         return array();
     }
 
-    /**
-    * Updates the given record 
-    *
-    * @param array                                    $updateArray        The updated data in an array
-    * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler        DataHandler Object with can be used to retrieve data
-    *
-    * @return int
-    */
-    public function updateRecordFlexForm($updateArray, $dataHandler){
-        if($this->existsRecord()){
-            $updatedRecordData = $this->updateRecordFromFlexForm(
-                        $this->getRecordData(), 
-                        $this->convertFlexFormToArray($updateArray["pi_flexform"])
-            );
-            $updatedRecordData["tstmap"] = $this->getRecordData()["tstmap"];
-
-            $this->updateRecordToDatabase($this->getRecordData()["uid"], $updatedRecordData, $dataHandler);
-            //$this->addFlexFormDataToContent($this->getContent(), "two_click_record", $this->getRecordData()["uid"], $dataHandler);
-
-            return $this->getRecordData()["uid"];
-        }
-
-        return 0;
-    }
-
     /** 
     * Adds data to flexForm
     *
@@ -427,32 +396,6 @@ class Record{
     public function updateContent($content, $dataHandler){
         $data["tt_content"][$content["uid"]] = $content;
         $this->processTCAData($data, $dataHandler);
-    }
-
-    /**
-    * Adds the given record to the record table, returns 0 when
-    * The record can not be added.
-    *
-    * @param array                                    $fieldArray        The updated data in an array
-    * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler        DataHandler Object with can be used to retrieve data
-    *
-    * @return int
-    **/
-    public function addRecord($fieldArray, $dataHandler){
-        if($this->ExistsRecord() === false){
-            $recordData = $this->updateRecordFromFlexForm(
-                array(), 
-                $this->convertFlexFormToArray($fieldArray["pi_flexform"])
-            );
-            $recordData["content_id"] = $this->getContent()["uid"];
-            $recordData["pid"] = $this->getContent()["pid"];
-            $id = $this->addRecordToDatabase($recordData, $dataHandler);
-            $this->addFlexFormDataToContent($this->getContent(), "two_click_record", strval($id), $dataHandler);
-
-            return $id;
-        }
-
-        return 0;
     }
 
     /**
@@ -517,22 +460,8 @@ class Record{
     * @return array 
     */
     public function convertFlexFormToArray($flexForm){
-        
-        return $this->flexFormService->convertFlexFormContentToArray($flexForm);
-    }
-
-    /**
-    * Adds or updates the record
-    * @param array                                    $updateArray        The updated data in an array
-    * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler        DataHandler Object with can be used to retrieve data
-    */
-    public function addOrUpdateRecord($fieldArray, $dataHandler){
-        $id = $this->addRecord($fieldArray, $dataHandler);
-        if($id === 0){
-            $id = $this->updateRecordFlexForm($fieldArray, $dataHandler);
-        }
-
-        $this->setUid($id);
+        $flexFormService = new FlexFormService();
+        return $flexFormService->convertFlexFormContentToArray($flexForm);
     }
     
     /**
@@ -540,8 +469,18 @@ class Record{
     *
     * @return array
     */
-    public function getRecordData(){
+    public function getRecordDataByContentId(){
         return BackendUtility::getRecordRaw('tx_uw_two_clicks_records', "content_id = ".$this->getContentId());
+    }
+
+    /**
+    * Returns the record by the given uid
+    *
+    * @return array
+    */
+    public function getRecordDataByUid(){
+
+        return BackendUtility::getRecord('tx_uw_two_clicks_records', $this->getUid());
     }
     
     /**
@@ -558,18 +497,144 @@ class Record{
     * Synchronizes the record with database, it does not update,
     * only fetches the data from the server.
     *
+    *
+    * @param bool $useContentUid If the sync with record should use the content uid to get the record element
     **/
-    public function sync(){
-         $record = BackendUtility::getRecord('tx_uw_two_clicks_records', $this->getUid());
-         $this->setPid($record["pid"]);
-         $this->setAutoPlay($record["auto_play"]);
-         $this->setContentId($record["content_id"]);
-         $this->setEmbeddedText($record["embedded_text"]);
-         $this->setLicense($record["license"]);
-         $this->setService($record["service"]);
-         $this->setPreviewImageId($record["preview_image_id"]);
-         $this->setRecordId($record["record_id"]);
-         $this->setHeight($record["height"]);
-         $this->setWidth($record["width"]);
+    public function syncWithRecords($useContentUid = false){
+        if($useContentUid === true){
+            $record = $this->getRecordDataByContentId();
+            $this->setUid($record["uid"]);
+        }
+        else{
+            $record = $this->getRecordDataByUid();
+            $this->setContentId($record["content_id"]);
+        }
+        $this->setPid($record["pid"]);
+        $this->setAutoPlay($record["auto_play"]);
+        $this->setEmbeddedText($record["embedded_text"]);
+        $this->setLicense($record["license"]);
+        $this->setRecordType($record["record_type"]);
+        $this->setPreviewImageId($record["preview_image_id"]);
+        $this->setRecordId($record["record_id"]);
+        $this->setHeight($record["height"]);
+        $this->setWidth($record["width"]);
     }
+
+    /**
+    * Sync the Record with the available flexform data.
+    */
+    public function syncWithFlexForm(){
+        $content = $this->getContent();
+        $this->fillWithFlexForm($this->getContent()["pi_flexform"]);
+    }
+
+    /**
+    * Fills the record with the flexform data
+    * 
+    * @param string $flexForm The flexForm string data.
+    */
+    public function fillWithFlexForm($flexForm){
+        $flexFormData = $this->convertFlexFormToArray($flexForm);
+        $record = $this->updateRecordFromFlexForm(array(), $flexFormData);
+        $this->setAutoPlay($record["auto_play"]);
+        $this->setEmbeddedText($record["embedded_text"]);
+        $this->setRecordId($record["record_id"]);
+        $this->setRecordType($record["record_type"]);
+        $this->setHeight($record["height"]);
+        $this->setWidth($record["width"]);
+        if(isset($record["two_click_record"]) && $record["two_click_record"]!== ''){
+            $this->setUid($record["two_click_record"]);
+        }
+    }
+
+    /**
+    * Commit the data to the record table
+    *
+    * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler  DataHandler Object with can be used to retrieve data
+    */
+    public function commitToRecordsTable($dataHandler){
+        if($this->getUid() === Null){
+            $id = StringUtility::getUniqueId('NEW');
+        }
+        else{
+            $id = $this->getUid();
+        }
+        $data["tx_uw_two_clicks_records"][$id] = $this->getRecordAsDataArray();
+        $this->processTCAData($data, $dataHandler);
+
+        if($this->getUid() === Null){
+
+            return $dataHandler->substNEWwithIDs[$id];
+        }
+
+        return $id;       
+    }
+
+    /**
+    * Returns the record as database associative array
+    *
+    * @return array
+    */
+    public function getRecordAsDataArray(){
+        return array(
+            "pid" =>  $this->getPid(),
+            "auto_play" => $this->getAutoPlay(),
+            "width" => $this->getWidth(),
+            "height" => $this->getHeight(),
+            "url" => $this->getUrl(),
+            "license" => $this->getLicense(),
+            "content_id" => $this->getContentId(),
+            "preview_image_id" => $this->getPreviewImageId(),
+            "record_id" => $this->getRecordId(),
+            "record_type" => $this->getRecordType());
+    }
+
+    /**
+    * Commit the data to the flex form table
+    *
+    */
+    public function commitToFlexForm($dataHandler){
+        $this->addFlexFormDataToContent($this->getContent(), "two_click_record", $this->getUid(), $dataHandler);
+    }
+
+    /**
+    * Returns the difference of the record with the other one as an array
+    *
+    * @param Record $record Another instance of record object
+    * 
+    * @return array
+    */
+    public function diff($record){
+        return array_diff_assoc(get_object_vars($this), get_object_vars($record));
+    }
+
+    /**
+    * Updates the given record with the given data
+    *
+    * @param array $data The data array
+    */
+    public function updateRecordWithArray($data){
+        if(isset($data["recordType"])){
+            $this->recordType = $data["recordType"];
+            unset($data["recordType"]);
+        }
+        $sd = new ServiceDispatcher($this);
+        $service = $sd->getService();
+        if(isset($data["recordId"]) && $data["recordId"] !== ""){
+            if($this->getRecordId() !== ''){
+                $service->removePreviewImage($this);
+            }
+            $this->setRecordId($data["recordId"]);
+            $file = $service->addOrUpdatePreviewImage($service->getPreviewImageUrl($this), $this);
+            $this->setPreviewImageId($file->getUid());
+        }
+        if(isset($data["height"])){
+            $defaultHeight = $service->getDefaultHeight();
+            $this->setHeight($data["height"], $defaultHeight);
+        }
+        if(isset($data["width"])){
+            $defaultWidth = $service->getDefaultWidth();
+            $this->setWidth($data["width"], $defaultWidth);
+        }
+    }    
 }

@@ -248,4 +248,21 @@ class GenericService{
         return hash("md5", $value."-".$this->getServiceType());
     }
 
+    /**
+    * Returns the default set height in the given table
+    *
+    * @return string
+    */
+    public function getDefaultHeight(){
+        $this->backendConfig->value($serviceType."."."height");
+    }
+
+    /**
+    * Returns the default set width
+    *
+    * @return string
+    */
+    public function getDefaultWidth(){
+        $this->backendConfig->value($serviceType."."."width");
+    }
 }

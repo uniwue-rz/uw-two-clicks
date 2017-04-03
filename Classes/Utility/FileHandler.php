@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+
 use TYPO3\CMS\Core\Resource\File;
 
 class FileHandler{
@@ -48,6 +49,20 @@ class FileHandler{
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->resourceFactory = ResourceFactory::getInstance();
         $this->backendConfig = new BackendConfig();
+        $this->setStorage($this->findStorage());
+    }
+
+    /**
+    * Creates a path for the given file and folder
+    *
+    * @param string $folderPath The path for the folder
+    * @param string $filePath   The name of the given file
+    *
+    * @return string
+    */
+    public function createFilePath($folderPath, $filePath){
+
+        return $folderPath."/".$filePath;
     }
 
     /**
@@ -64,6 +79,15 @@ class FileHandler{
         }
 
         return null;
+    }
+
+    /**
+    * Sets the storage for the given fileHandler
+    *
+    * @param TYPO3\CMS\Core\Resource\ResourceStorage $storage The storage insatnce
+    */
+    public function setStorage($storage){
+        $this->storage = $storage;
     }
 
     /**
@@ -114,6 +138,17 @@ class FileHandler{
         $content = $this->getContent($uid);
 
         return $this->getPage($content["pid"]);
+    }
+
+
+    /**
+    * Returns the storage for the given file handler.
+    *
+    * @return TYPO3\CMS\Core\Resource\ResourceStorage
+    */
+    public function getStorage(){
+        
+        return $this->storage;
     }
 
     /**
@@ -198,15 +233,16 @@ class FileHandler{
     /**
     * Returns the storage if not found the fallback one
     *
-    * @param int $id The id of the storage
-    *
     * @return TYPO3\CMS\Core\Resource\ResourceStorage | Null
     */
-    public function getStorage($id = 1){
-        $storage = $this->getStorageObject($id);
-        if($storage === null){
+    public function findStorage(){
+        if($storage === null && ($id === Null  || $id === "")){
 
             $storage =  $this->getFallbackStorage();
+        }
+        else{
+            $id = $this->getConfiguredStorage();    
+            $storage = $this->getStorageObject($id);
         }
 
         return $storage;
@@ -233,40 +269,40 @@ class FileHandler{
     * @param TYPO3\CMS\Core\Resource\ResourceStorage $storage           The storage object
     * @param string                                  $fileName          The fileName that should be set for the given user
     *
-    * @return mix
+    * @return TYPO3\CMS\Core\Resource\File | Null
     */
-    public function addFile($fileRealPath, $fileAdminPath,  $storeFolder, $storage, $fileName){
-        $endStoreFolder =  $fileAdminPath."/".$storeFolder;
+    public function addFile($fileRealPath, $fileAdminPath,  $storeFolder, $fileName){
+        $endStoreFolder = $this->createFilePath($fileAdminPath, $storeFolder);
         // Create the fileadmin path if not exists
-        if($this->folderExists($storage, $fileAdminPath) === false){
-            $this->createFolder($storage, "/", $fileAdminPath);
+        if($this->folderExists($fileAdminPath) === false){
+            $this->createFolder("/", $fileAdminPath);
         }
         // Create the store path if not exists
-        if($this->folderExists($storage, $endStoreFolder) === false){
-            $this->createFolder($storage, $fileAdminPath, $storeFolder);
+        if($this->folderExists($endStoreFolder) === false){
+            $this->createFolder($fileAdminPath, $storeFolder);
         }
-        $fileAdminPathObject = $storage->getFolder($endStoreFolder);
+        $fileAdminPathObject = $this->getFolder($endStoreFolder);
         // Add the file when not exists
-        $filePath = $endStoreFolder."/".$fileName;
-        if($this->fileExists($storage, $filePath) === false){
+        $filePath = $this->createFilePath($endStoreFolder, $fileName);
+        if($this->fileExists($filePath) === false){
                 
-                return $storage->addFile($fileRealPath, $fileAdminPathObject, $fileName);
+                return $this->storage->addFile($fileRealPath, $fileAdminPathObject, $fileName);
         }
+
+        return Null;
         
-        return $this->getFile($storage, $filePath);
     }
 
     /**
-    * Returns the given file from storage by the fileadmin path
+    * Returns the given file from storage by the fileadmin path or the id of the given file
     *
-    * @param TYPO3\CMS\Core\Resource\ResourceStorage $storage           The storage object
-    * @param string                                  $filePath          The path to the given file
+    * @param string  $filePath The path to the given file
     *
     * @return TYPO3\CMS\Core\Resource\File
     */
-    public function getFile($storage, $filePath){
+    public function getFile($filePath){
 
-        return $storage->getFile($filePath);
+        return $this->storage->getFile($filePath);
     }
 
     /**
@@ -306,11 +342,21 @@ class FileHandler{
     /**
     * Returns the fallback mount point to save the images
     *
-    * @return string || null
+    * @return string | Null
     */
     public function getConfiguredMountPoint(){
 
         return $this->backendConfig->value("files.defaultMountPoint");
+    }
+
+    /**
+    * Returns the value of the configured storage
+    *
+    * @return string
+    **/
+    public function getConfiguredStorage(){
+
+        return $this->backendConfig->value("files.storageId");
     }
 
     /**
@@ -331,6 +377,7 @@ class FileHandler{
     */
     public function getStoreFolder(){
         if($this->backendConfig->value("files.storeFolder") === null || $this->backendConfig->value("files.storeFolder") === ""){
+            
             return "TwoClicksImage";
         }
         return $this->backendConfig->value("files.storeFolder");
@@ -349,55 +396,62 @@ class FileHandler{
     /**
     * Creates a folder on the given storage and mount point.
     *
-    * @param TYPO3\CMS\Core\Resource\ResourceStorage $storage          The storage object
-    * @param string                                 $mountPoint        The mount point for the folder
-    * @param string                                 $folder            The name of the folder that should be created
+    * @param string  $mountPoint        The mount point for the folder
+    * @param string  $folder            The name of the folder that should be created
     *
     * @return Folder
     */
-    public function createFolder($storage, $mountPoint, $folder){
-        $mountPointFolder = $storage->getFolder($mountPoint);
+    public function createFolder($mountPoint, $folder){
+        $mountPointFolder = $this->getFolder($mountPoint);
         
-        return $storage->createFolder($folder, $mountPointFolder);
+        return $this->storage->createFolder($folder, $mountPointFolder);
+    }
+
+    /**
+    * Returns the folder object for the given path.
+    *
+    * @return Folder
+    **/
+    public function getFolder($path){
+
+        return $this->storage->getFolder($path);
     }
 
     /**
     * Search if the given file exists on the given storage
     *
-    * @param TYPO3\CMS\Core\Resource\ResourceStorage $storage           The storage object
-    * @param string                                  $path              The filename that should be checked for existence
+    * @param string $path The filename that should be checked for existence
     *
     * @return bool
     */
-    public function fileExists($storage, $path){
+    public function fileExists($path){
 
-        return $storage->hasFile($path);
+        return $this->storage->hasFile($path);
     }
 
     /**
     * Checks if the given folder exists on the storage
     *
-    * @param TYPO3\CMS\Core\Resource\ResourceStorage $storage           The storage object
-    * @param string                                  $path              The folder that should exists
+    * @param string  $path  The folder that should exists
     *
     * @return bool
     */
-    public function folderExists($storage, $path){
+    public function folderExists($path){
         
-        return $storage->hasFolder($path);
+        return $this->storage->hasFolder($path);
     }
 
     /**
     * Deletes the file from the file system and database
     *
-    * @param TYPO3\CMS\Core\Resource\ResourceStorage $storage           The storage object
-    * @param int                                     $id                The id of the given file to be deleted
+    * @param int  $id  The id of the given file to be deleted
     *
     * @return bool
     */
-    public function deleteFile($storage, $id){
-        $file = $this->storage->getFile($id);
+    public function deleteFile($id){
+        $file = $this->getFile($id);
         
-        return $storage->deleteFile($file);
+        return $this->storage->deleteFile($file);
     }
+
 }

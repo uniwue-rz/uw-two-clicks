@@ -32,6 +32,7 @@ class ServiceDispatcher{
     */
     public function __construct(Record $record){
         $this->setRecord($record);
+        $this->setService();
     }
 
     /**
