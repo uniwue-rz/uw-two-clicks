@@ -27,3 +27,6 @@ which the images from youtube are save. To make less queries to YouTube, this ap
 ## Bug reports and Pull Requests
 Both bug reports and pull requests are accepted. When reporting the bug please tell me the Typo3 Version, PHP version and also your file
 system configuration (all the settings from file tab). 
+
+## License
+See LICENSE file
