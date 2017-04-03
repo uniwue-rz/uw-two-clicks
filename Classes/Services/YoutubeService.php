@@ -153,8 +153,6 @@ class YoutubeService extends GenericService{
 
     /**
     * Removes the preview image from the system if exists
-    *
-    * @return bool
     */
     public function removePreviewImage(Record $record){
         $path = $this->createPreviewFilePath($record);

@@ -27,36 +27,13 @@ class StartController extends ActionController{
         $record = BackendUtility::getRecord("tx_uw_two_clicks_records", intval($flexFromData["settings.two_click_record"]));
         $height = $record["height"];
         $width = $record["width"];
+        $autoPlay = $record["auto_play"];
+        $recordId = $record["record_id"];
+        $disclaimer = $backendConfig->value($record["record_type"].".disclaimer");
+        $this->view->assign('disclaimer', $disclaimer);
         $this->view->assign('image_id', $record["preview_image_id"]);
+        $this->view->assign('record_id', $recordId);
         $this->view->assign('height', $height);
         $this->view->assign('width', $width);
     }
-
-    /**
-    * Returns the user input from the flexForm data.
-    *
-    * @param array $contentData The content data that the FlexForm data should be extracted from
-    *
-    * @return array
-    */
-    private function getFlexData($contentData){
-        $result = [];
-        if(isset($contentData['pi_flexform'])){
-            $this->configurationManager->getContentObject()->readFlexformIntoConf($contentData['pi_flexform'], $result);
-        }
-        
-        return $result;
-    }
-
-
-    /**
-    * Returns the content data from the database.
-    *
-    * @return array
-    */
-    private function getContentData(){
-
-        return  $this->configurationManager->getContentObject()->data;
-    }
-
 }
