@@ -11,6 +11,8 @@ width =
 height =
 # cat=youtube/enable; type=string; label=Disclaimer: The disclaimer that should be shown to the user for youtube videos
 disclaimer =
+# cat=youtube/enable; type=string; label=Forward Button: What to show on the forward Button.
+forward = 
 }
 files{
 # cat=files/enable; type=string; label=Fileadmin default folder to store the preview files

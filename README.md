@@ -33,6 +33,9 @@ This set the height of the video for the given page. The default value is here `
 #### youtube.yt.disclaimer
 This is the disclaimer that is going to be shown on the video. This is set once for all YouTube video. It can be a simple html text i multiple languages. If it is longer than the video width it will be shown with scroll-bar.
 
+#### youtube.yt.forward
+This is text that is used on the button to go the next step after accepting. This should be set, the default value is empty.
+
 ### Files Configuration
 This settings should be changed with care. Consider setting them once at the start. Changing them without the same changes to the
 filesystem causes problem for the existing contents.
