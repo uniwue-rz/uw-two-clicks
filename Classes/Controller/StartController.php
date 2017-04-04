@@ -25,7 +25,7 @@ class StartController extends ActionController{
         $height = $record["height"];
         $width = $record["width"];
         $disclaimer = $backendConfig->value($record["record_type"].".disclaimer");
-        $forward = $backendConfig->value($record["record_type"]."forward");
+        $forward = $backendConfig->value($record["record_type"].".forward");
         $this->view->assign('record', $record);
         $this->view->assign('forward', $forward);
         $this->view->assign('disclaimer', $disclaimer);
