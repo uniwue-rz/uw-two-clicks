@@ -12,6 +12,7 @@ For the configuration you should use the extension manager configuration tab. Go
 button and you will see two tabs available. 
 
 ### Youtube Configuration
+
 #### youtube.yt.apiUrl
 This is the api url of the Youtube, at the `v3` you should use:
 `https://www.googleapis.com/youtube/v3/videos`
