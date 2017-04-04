@@ -9,7 +9,6 @@
 namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Services;
 
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Domain\Model\Record;
-
 use De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Utility\Url;
 
 class YoutubeService extends GenericService{
@@ -81,6 +80,7 @@ class YoutubeService extends GenericService{
     * @return string
     */
     public function createPreviewFileName(Record $record){
+
         return $record->getRecordId()."-".$record->getContentId().".jpeg";
     }
 
@@ -156,16 +156,7 @@ class YoutubeService extends GenericService{
     */
     public function removePreviewImage(Record $record){
         $path = $this->createPreviewFilePath($record);
-        $this->fileHandler->deleteFile($path);
-    }
-
-    /**
-    * Removes the preview image reference from system if exists
-    *
-    * @return bool
-    */
-    public function removePreviewImageReference(Record $record){
-
+        $this->fileHandler->deleteFile($record->getPreviewImageId());
     }
 
     /**
@@ -174,7 +165,31 @@ class YoutubeService extends GenericService{
     *
     * @return string
     */ 
-    public function getCopyRightTag(Record $record){
+    public function getLicense(Record $record){
+        $license = "";
+        $videoInformation = $this->getProviderInformation($record);
+        if(isset($videoInformation["items"][0]["status"]["license"])){
+            $license = "(C) " . $videoInformation["items"][0]["status"]["license"]. " License";
+        }
+        if(isset($videoInformation["items"][0]["snippet"]["channelTitle"])){
+            $license  = $license ." ". $videoInformation["items"][0]["snippet"]["channelTitle"];
+        }
 
+        return $license;
+    }
+
+    /**
+    * Returns the Alt text
+    *
+    * @return string
+    */
+    public function getAltText(Record $record){
+        $altText = "";
+        $videoInformation = $this->getProviderInformation($record);
+         if(isset($videoInformation["items"][0]["snippet"]["title"])){
+            $altText = $videoInformation["items"][0]["snippet"]["title"];
+        }
+
+        return $altText;       
     }
 }

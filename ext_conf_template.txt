@@ -9,7 +9,7 @@ autoPlay =
 width =
 # cat=youtube/enable; type=int; label=Height: Default Height of the embedded youtube video
 height =
-# cat=youtube/enable; type=text; label=Disclaimer: The disclaimer that should be shown to the user for youtube videos
+# cat=youtube/enable; type=string; label=Disclaimer: The disclaimer that should be shown to the user for youtube videos
 disclaimer =
 }
 files{

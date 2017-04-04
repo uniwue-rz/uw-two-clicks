@@ -13,11 +13,8 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-
 use TYPO3\CMS\Core\Resource\File;
 
 class FileHandler{
@@ -302,7 +299,7 @@ class FileHandler{
     */
     public function getFile($filePath){
 
-        return $this->storage->getFile($filePath);
+        return $this->resourceFactory->retrieveFileOrFolderObject($filePath);
     }
 
     /**

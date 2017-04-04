@@ -251,18 +251,30 @@ class GenericService{
     /**
     * Returns the default set height in the given table
     *
-    * @return string
+    * @return string | Null
     */
     public function getDefaultHeight(){
-        $this->backendConfig->value($serviceType."."."height");
+
+        return $this->backendConfig->value($this->serviceType."."."height");
     }
 
     /**
     * Returns the default set width
     *
-    * @return string
+    * @return string | Null
     */
     public function getDefaultWidth(){
-        $this->backendConfig->value($serviceType."."."width");
+
+        return $this->backendConfig->value($this->serviceType."."."width");
+    }
+
+    /**
+    * Returns the default value for autoPlay
+    *
+    * @return bool | Null
+    */
+    public function getDefaultAutoPlay(){
+
+        return $this->backendConfig->value($this->serviceType."."."auto_play");
     }
 }

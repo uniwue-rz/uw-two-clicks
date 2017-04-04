@@ -82,6 +82,7 @@ class Url{
     * @return string
     */
     public function getStorePath(){
+
         return $this->tmpFolder.$this->name;
     }
 
@@ -125,7 +126,6 @@ class Url{
 
         return $this->getStorePath();
     }
-
 
     /**
     * Fetches the given url as variable

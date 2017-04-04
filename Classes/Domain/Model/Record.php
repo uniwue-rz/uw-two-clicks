@@ -9,6 +9,7 @@
 namespace De\Uniwue\RZ\Typo3\Ext\UwTwoClicks\Domain\Model;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -69,14 +70,13 @@ class Record{
     protected $pid;
 
     /**
+    * @var string
+    */
+    protected $altText;
+
+    /**
     * Constructor
     *
-    * @param string $recordId       The id of the given record ont the service
-    * @param string $service        The service that should be used. (youtube, vimeo, ...)
-    * @param string $embeddedText   The text that should be embedded
-    * @param int    $width          The width of the element
-    * @param int    $height         The height of the given element
-    * @param bool   $autoPlay       The autoplay for the given record
     */
     public function __construct(
         $recordId = '',
@@ -91,7 +91,8 @@ class Record{
         $contentId = null,
         $udi = null,
         $pid = null,
-        $url = "")
+        $url = "",
+        $altText = "")
         {
             $this->setRecordId($recordId);
             $this->setRecordType($recordType);
@@ -105,6 +106,7 @@ class Record{
             $this->setPid($pid);
             $this->setUid($uid);
             $this->setUrl($url);
+            $this->setAltText($altText);
             }
 
     /**
@@ -125,6 +127,25 @@ class Record{
     public function getUrl(){
 
         return $this->url;
+    }
+
+    /**
+    * Return the alternative text for the given record
+    *
+    * @return string
+    */
+    public function getAltText(){
+
+        return $this->altText;
+    }
+
+    /**
+    * Sets the alternative text for the given record
+    *
+    * @param string $altText The text for the alternative text of the record
+    */
+    public function setAltText($altText = ""){
+        $this->altText = $altText;
     }
 
     /**
@@ -241,7 +262,7 @@ class Record{
     *
     * @param int $width The width for the given element
     */
-    public function setWidth($width, $defaultWidth=500){
+    public function setWidth($width, $defaultWidth = 600){
         if($width === Null || $width === ""){
             $this->width=$defaultWidth;
         }
@@ -265,7 +286,7 @@ class Record{
     *
     * @param int $height The height of the record to set
     */
-    public function setHeight($height, $defaultHeight=250){
+    public function setHeight($height, $defaultHeight = 400){
         if($height === Null || $height === ""){
             $this->height = $defaultHeight;
         }else{
@@ -287,8 +308,11 @@ class Record{
     *
     * @param bool $autoPlay The autoplay of the record that should be set.
     */
-    public function setAutoPlay($autoPlay){
-        if(is_bool($autoPlay)){
+    public function setAutoPlay($autoPlay, $defaultAutoPlay = false){
+        if($autoPlay === Null || $autoPlay === ""){
+            $this->autoPlay = $defaultAutoPlay;
+        }
+        else{
             $this->autoPlay = $autoPlay;
         }
     }
@@ -513,6 +537,7 @@ class Record{
         $this->setAutoPlay($record["auto_play"]);
         $this->setEmbeddedText($record["embedded_text"]);
         $this->setLicense($record["license"]);
+        $this->setAltText($record["altText"]);
         $this->setRecordType($record["record_type"]);
         $this->setPreviewImageId($record["preview_image_id"]);
         $this->setRecordId($record["record_id"]);
@@ -583,6 +608,7 @@ class Record{
             "height" => $this->getHeight(),
             "url" => $this->getUrl(),
             "license" => $this->getLicense(),
+            "alt" => $this->getAltText(),
             "content_id" => $this->getContentId(),
             "preview_image_id" => $this->getPreviewImageId(),
             "record_id" => $this->getRecordId(),
@@ -625,8 +651,19 @@ class Record{
                 $service->removePreviewImage($this);
             }
             $this->setRecordId($data["recordId"]);
+            // Get the license data
+            $license = $service->getLicense($this);
+            $this->setLicense($license);
+            // Get preview image
             $file = $service->addOrUpdatePreviewImage($service->getPreviewImageUrl($this), $this);
             $this->setPreviewImageId($file->getUid());
+            // Get the Alternative text
+            $altText = $service->getAltText($this);
+            $this->setAltText($altText);
+        }
+        if(isset($data["autoPlay"])){
+            $defaultAutoPlay = $service->getDefaultAutoPlay();
+            $this->setAutoPlay($data["autoPlay"], $defaultAutoPlay);
         }
         if(isset($data["height"])){
             $defaultHeight = $service->getDefaultHeight();

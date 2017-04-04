@@ -72,6 +72,7 @@ class ServiceDispatcher{
     * @return Service
     */
     public function getService(){
+        
         return $this->service;
     }
 }

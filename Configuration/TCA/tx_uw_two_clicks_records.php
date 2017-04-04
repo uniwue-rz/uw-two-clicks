@@ -2,6 +2,7 @@
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:uw_two_clicks/Resources/Private/Language/locallang_db.xlf:tca.database_table_tile',
+        'iconfile' => 'EXT:uw_two_clicks/ext_icon.png',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -9,6 +10,7 @@ return [
         'default_sortby' => 'ORDER BY title',
         'delete' => 'deleted',
         'enablecolumns' => [
+            'enabled' => 'record_type, record_id',
             'disabled' => 'hidden',
         ],
         'record_id' => 'record_id',
@@ -122,6 +124,13 @@ return [
         'embedded_text' => [
             'exclude' => 0,
             'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.embedded_text_desc',
+            'config' => [
+                'type' => 'text',
+            ],
+        ],
+        'alt' => [
+            'exclude' => 0,
+            'label' => 'LLL:EXT:examples/Resources/Private/Language/locallang_db.xlf:tca.alt_text',
             'config' => [
                 'type' => 'text',
             ],
